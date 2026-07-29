@@ -19,7 +19,11 @@ namespace Chris.Pool
         
         private readonly string _subKey;
         
+#if UNITY_6000_5_OR_NEWER
+        private readonly ulong _id;
+#else
         private readonly int _id;
+#endif
         
         public PoolKey(string key)
         {
@@ -35,7 +39,11 @@ namespace Chris.Pool
             _id = 0;
         }
         
+#if UNITY_6000_5_OR_NEWER
+        public PoolKey(string key, ulong id)
+#else
         public PoolKey(string key, int id)
+#endif
         {
             _key = key;
             _subKey = null;

@@ -72,8 +72,7 @@ namespace Chris.AI.EQS
         /// <returns></returns>
         public ReadOnlySpan<float3> GetPosts()
         {
-            var readonlyPosts = _system.GetPosts(GetActor().GetActorHandle());
-            return !readonlyPosts.IsCreated ? default(ReadOnlySpan<float3>) : readonlyPosts;
+            return _system.GetPosts(GetActor().GetActorHandle()).AsReadOnlySpan();
         }
     }
 }

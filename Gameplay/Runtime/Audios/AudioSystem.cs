@@ -170,13 +170,25 @@ namespace Chris.Gameplay.Audios
         {
             private readonly string _address;
 
+#if UNITY_6000_5_OR_NEWER
+            private readonly ulong _instanceId;
+#else
             private readonly int _instanceId;
+#endif
 
+#if UNITY_6000_5_OR_NEWER
+            public AudioKey(EntityId entityId)
+            {
+                _instanceId = EntityId.ToULong(entityId);
+                _address = null;
+            }
+#else
             public AudioKey(int instanceId)
             {
                 _instanceId = instanceId;
                 _address = null;
             }
+#endif
             
             public AudioKey(string address)
             {
@@ -245,7 +257,11 @@ namespace Chris.Gameplay.Audios
         /// <param name="audioClip"></param>
         public static void StopAudio(AudioClip audioClip)
         {
+#if UNITY_6000_5_OR_NEWER
+            var key = new AudioKey(audioClip.GetEntityId());
+#else
             var key = new AudioKey(audioClip.GetInstanceID());
+#endif
             if (!AudioCache.TryGetValue(key, out var latestHandle)) return;
             latestHandle?.Dispose();
             AudioCache.Remove(key);
@@ -270,7 +286,11 @@ namespace Chris.Gameplay.Audios
         /// <param name="audioClip"></param>
         public static AudioSourceHandle FindAudio(AudioClip audioClip)
         {
+#if UNITY_6000_5_OR_NEWER
+            var key = new AudioKey(audioClip.GetEntityId());
+#else
             var key = new AudioKey(audioClip.GetInstanceID());
+#endif
             var source = AudioCache.GetValueOrDefault(key);
             return source?.AudioHandle ?? default;
         }
@@ -309,7 +329,11 @@ namespace Chris.Gameplay.Audios
         /// <param name="minDistance"></param>
         public static AudioSourceHandle PlayClipAtPoint(AudioClip audioClip, Vector3 position, float volume = 1f, float spatialBlend = 1f, float minDistance = 10f)
         {
+#if UNITY_6000_5_OR_NEWER
+            var audioObject = PooledAudioSource.Get(new AudioKey(audioClip.GetEntityId()), GetRoot(), volume, spatialBlend, minDistance);
+#else
             var audioObject = PooledAudioSource.Get(new AudioKey(audioClip.GetInstanceID()), GetRoot(), volume, spatialBlend, minDistance);
+#endif
             return PlayClipAtPoint(audioClip, audioObject, position);
         }
         
@@ -354,7 +378,11 @@ namespace Chris.Gameplay.Audios
         /// <param name="minDistance"></param>
         public static AudioSourceHandle PlayLoopClipAtPoint(AudioClip audioClip, Vector3 position, float volume = 1f, float spatialBlend = 1f, float minDistance = 10f)
         {
+#if UNITY_6000_5_OR_NEWER
+            var audioObject = PooledAudioSource.Get(new AudioKey(audioClip.GetEntityId()), GetRoot(), volume, spatialBlend, minDistance);
+#else
             var audioObject = PooledAudioSource.Get(new AudioKey(audioClip.GetInstanceID()), GetRoot(), volume, spatialBlend, minDistance);
+#endif
             return PlayLoopClipAtPoint(audioClip, audioObject, position);
         }
         

@@ -85,7 +85,11 @@ namespace Chris.Resource
         /// </summary>
         private static uint _version = 1;
 
+#if UNITY_6000_5_OR_NEWER
+        private static readonly Dictionary<EntityId, ResourceHandle> InstanceIDMap = new();
+#else
         private static readonly Dictionary<int, ResourceHandle> InstanceIDMap = new();
+#endif
 
         private static readonly SparseArray<AsyncOperationStructure> Operations = new(10, int.MaxValue);
 
@@ -209,7 +213,11 @@ namespace Chris.Resource
 
             void OnHandleOnCompleted(AsyncOperationHandle<GameObject> operationHandle)
             {
+#if UNITY_6000_5_OR_NEWER
+                InstanceIDMap.Add(operationHandle.Result.GetEntityId(), resourceHandle);
+#else
                 InstanceIDMap.Add(operationHandle.Result.GetInstanceID(), resourceHandle);
+#endif
                 callback?.Invoke(operationHandle.Result);
             }
         }
@@ -265,7 +273,11 @@ namespace Chris.Resource
         {
             if (!gameObject) return;
             
+#if UNITY_6000_5_OR_NEWER
+            if (InstanceIDMap.TryGetValue(gameObject.GetEntityId(), out var handle))
+#else
             if (InstanceIDMap.TryGetValue(gameObject.GetInstanceID(), out var handle))
+#endif
             {
                 if (!handle.IsValid()) return;
                 ReleaseHandleInternal(handle);

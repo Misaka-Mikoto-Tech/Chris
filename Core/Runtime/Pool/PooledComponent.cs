@@ -55,7 +55,11 @@ namespace Chris.Pool
         public static PoolKey GetPooledKey(GameObject prefab)
         {
             // append instance id since prefabs may have same name
+#if UNITY_6000_5_OR_NEWER
+            return new PoolKey(Prefix, EntityId.ToULong(prefab.GetEntityId()));
+#else
             return new PoolKey(Prefix, prefab.GetInstanceID());
+#endif
         }
         
         /// <summary>

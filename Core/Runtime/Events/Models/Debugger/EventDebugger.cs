@@ -639,7 +639,11 @@ namespace Chris.Events
                 if (withHashCode)
                 {
                     //Prefer to use instanceID at runtime
+#if UNITY_6000_5_OR_NEWER
+                    objectName += " (" + behaviour.GetEntityId().ToString("x") + ")";
+#else
                     objectName += " (" + behaviour.GetInstanceID().ToString("x8") + ")";
+#endif
                 }
             }
             // EventHandler attached to a MonoBehaviour
@@ -649,7 +653,11 @@ namespace Chris.Events
                 if (withHashCode)
                 {
                     //Prefer to use instanceID at runtime
+#if UNITY_6000_5_OR_NEWER
+                    objectName += " (" + bs.Behaviour.GetEntityId().ToString("x") + ")";
+#else
                     objectName += " (" + bs.Behaviour.GetInstanceID().ToString("x8") + ")";
+#endif
                 }
             }
 
